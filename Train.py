@@ -1,5 +1,7 @@
 # ECE452 Project 1, Part 1
 # Group 8 Members: Arnav R., Raghav B., and Daniel A.
+#
+# Sample command: python3 Train.py --epochs 20 --lr 0.01 --plot plot.png --opt adam --loss mse 
 
 # Inspiration comes from kaggle.com/code/geekysaint/solving-mnist-using-pytorch 
 import re
@@ -49,7 +51,7 @@ class MnistCnn(nn.Module):
 
     # Training function. Uses Mean Squared Error loss with Stochastic
     # Gradient Descent optimizer.
-    def fit(self, images, labels, epochs: int = 5, lr: float = 0.001, batch: int = 64, plot_name=None):
+    def fit(self, images, labels, epochs: int = 5, lr: float = 0.001, batch: int = 64, plot_name=None, loss_type='mse', opt_type='sgd'):
         images = torch.stack(images)
         labels = torch.tensor(labels)
         dataset = TensorDataset(images, labels)
@@ -58,8 +60,15 @@ class MnistCnn(nn.Module):
         device = torch.device("cpu")
         self.to(device)
 
-        criterion = nn.MSELoss()
-        optimizer = torch.optim.SGD(self.parameters(), lr=lr)
+        if loss_type.lower() == 'mse':
+            criterion = nn.MSELoss()
+        else:
+            criterion = nn.CrossEntropyLoss()
+        
+        if opt_type.lower() == 'adam':
+            optimizer = torch.optim.Adam(self.parameters(), lr=lr)
+        else:
+            optimizer = torch.optim.SGD(self.parameters(), lr=lr)
 
         labels_OneHot = F.one_hot(labels, num_classes=10).float()
 
@@ -76,7 +85,7 @@ class MnistCnn(nn.Module):
                 outputs = self.forward(images)
                 loss = criterion(outputs, labels_OneHot)
                 loss.backward()
-                optimizer.step
+                optimizer.step()
 
                 total_loss += loss.item()
 
@@ -96,9 +105,9 @@ class MnistCnn(nn.Module):
         plt.title('Training Performance')
         plt.xlabel('Epochs')
         plt.ylabel('Loss')
-        plt.savefig(PlotName)
+        plt.savefig(plot_name)
         plt.close()
-        print(f'Loss plot saved as {PlotName}')
+        print(f'Loss plot saved as {plot_name}')
 
 #----------------------------
 # Convert all training images to tensors 
@@ -127,6 +136,8 @@ if __name__=='__main__':
     parser.add_argument('--batch', type=int, default=64, help='Batch size for training')
     parser.add_argument('--output', type=str, default='model.pt', help='Name of output pt file')
     parser.add_argument('--plot', nargs='?', const='loss_plot.png', default=None, help='Enable plotting of loss curves.')
+    parser.add_argument('--opt', choices=['sgd','adam'], default='sgd', help='Optimizer')
+    parser.add_argument('--loss', choices=['mse','ce'], default='mse', help='Loss function')
 
     args = parser.parse_args()
 
@@ -137,7 +148,9 @@ if __name__=='__main__':
               epochs=args.epochs,
               lr=args.lr,
               batch=args.batch,
-              plot_name=args.plot)
+              plot_name=args.plot,
+              loss_type=args.loss,
+              opt_type=args.opt)
 
     finalname = args.output if args.output.endswith('.pt') else args.output + '.pt'
     torch.save(model.state_dict(), finalname)
