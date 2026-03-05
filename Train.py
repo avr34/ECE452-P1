@@ -6,6 +6,7 @@
 # Inspiration comes from kaggle.com/code/geekysaint/solving-mnist-using-pytorch 
 import re
 import os
+import sys
 import torch
 import argparse
 import torchvision
@@ -23,31 +24,22 @@ from torch.utils.data import TensorDataset, DataLoader
 #----------------------------
 # Class for the neural network
 #----------------------------
-class MnistCnn(nn.Module):
-    # Two convolution and pooling layers, 3x3 with 1 cell padding each, and
-    # max pooling also 2x2.
-    def __init__(self):
-        super(MnistCnn, self).__init__()
-        self.ConvLayers = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, kernel_size=3, padding=1), 
-            nn.ReLU(),
-            nn.MaxPool2d(2)
-        )
-        self.FullyConnectedLayers = nn.Sequential(
+class MnistNetwork(nn.Module):
+    def __init__(self, n: int = 128):
+        super(MnistNetwork, self).__init__()
+        self.Layers = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(1024, 128),
+            nn.Linear(256, 128),
             nn.ReLU(),
-            nn.Linear(128, 10)
+            nn.Linear(128, 10), 
+            nn.ReLU(),
+            nn.Linear(10,10),
+            nn.ReLU()
         )
 
     # Forward pass through convolutional and fully connected layers
     def forward(self, x):
-        x = self.ConvLayers(x)
-        x = self.FullyConnectedLayers(x)
-        return x
+        return self.Layers(x)
 
     # Training function. Uses Mean Squared Error loss with Stochastic
     # Gradient Descent optimizer.
@@ -102,7 +94,7 @@ class MnistCnn(nn.Module):
 
         plt.figure(figsize=(10,5))
         plt.plot(LossHistory, color='red', label='Training Loss')
-        plt.title('Training Performance')
+        plt.title(f'Training Performance for {plot_name}')
         plt.xlabel('Epochs')
         plt.ylabel('Loss')
         plt.savefig(plot_name)
@@ -128,7 +120,7 @@ def ConvImageToTensor(RootFilePath: str) -> tuple[list[int], list[torch.FloatTen
         print(f'Specified root file path {RootFilePath} doesn\'t exist or smth')
 
 if __name__=='__main__':
-    parser = argparse.ArgumentParser(description="Train MnistCnn on MNIST training dataset")
+    parser = argparse.ArgumentParser(description="Train MnistNetwork on MNIST training dataset")
 
     parser.add_argument('--dir', type=str, default='./Provided/Part1/test_data/', help='Path to TIF images.')
     parser.add_argument('--epochs', type=int, default=10, help='Number of epochs')
@@ -138,12 +130,17 @@ if __name__=='__main__':
     parser.add_argument('--plot', nargs='?', const='loss_plot.png', default=None, help='Enable plotting of loss curves.')
     parser.add_argument('--opt', choices=['sgd','adam'], default='sgd', help='Optimizer')
     parser.add_argument('--loss', choices=['mse','ce'], default='mse', help='Loss function')
+    parser.add_argument('--neurons', type=int, default=128, help='Number of neurons in the first hidden layer')
 
     args = parser.parse_args()
 
+    if args.neurons < 10:
+        print('Number of neurons must be more than 10')
+        sys.exit(1)
+
     labels, images = ConvImageToTensor(args.dir)
 
-    model = MnistCnn()
+    model = MnistNetwork()
     model.fit(images, labels,
               epochs=args.epochs,
               lr=args.lr,
