@@ -122,7 +122,7 @@ def ConvImageToTensor(RootFilePath: str) -> tuple[list[int], list[torch.FloatTen
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description="Train MnistNetwork on MNIST training dataset")
 
-    parser.add_argument('--dir', type=str, default='./Provided/Part1/test_data/', help='Path to TIF images.')
+    parser.add_argument('--dir', type=str, default='./Provided/Part1/training_data/', help='Path to TIF images.')
     parser.add_argument('--epochs', type=int, default=10, help='Number of epochs')
     parser.add_argument('--lr', type=float, default=0.001, help='Learning Rate')
     parser.add_argument('--batch', type=int, default=64, help='Batch size for training')
