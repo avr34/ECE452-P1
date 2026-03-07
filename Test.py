@@ -41,7 +41,7 @@ class Layer():
         try:
             return np.dot(self.PostActivation, weights.T) + bias
         except Exception as e:
-            print(f'Error while doing matrix multiplication of layer {self.LayerNum}: {e}')
+            print(f'Error while doing matrix multiplication of layer {self.LayerNum}: {e}', end='')
             sys.exit(1)
     
     # Activate PreActivation to PostActivation
@@ -188,8 +188,6 @@ if __name__=='__main__':
         print(f'Error loading model at {args.model}')
         sys.exit(1)
 
-    print('Network initialized.')
-    print(f'Beginning testing on {args.dir}')
 
     TotalImages = 0
     TotalCorrect = 0
@@ -211,10 +209,7 @@ if __name__=='__main__':
         print(f'Error occurred while running inference: {e}')
         sys.exit(1)
 
-    print('Labels: ', LabelsList)
-    print('Predictions: ', PredictionList)
-
-    print(f'{TotalImages} tested, {TotalCorrect} correct, accuracy: {float(TotalCorrect)/TotalImages}')
+    print(f'{os.path.basename(args.model)}\t{TotalImages} tested, {TotalCorrect} correct, accuracy: {float(TotalCorrect)/TotalImages}')
 
     if args.conf:
         cm = confusion_matrix(LabelsList, PredictionList, labels=list(range(10)))

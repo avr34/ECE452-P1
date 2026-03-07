@@ -94,7 +94,7 @@ class MnistNetwork(nn.Module):
 
         plt.figure(figsize=(10,5))
         plt.plot(LossHistory, color='red', label='Training Loss')
-        plt.title(f'Training Performance for {plot_name}')
+        plt.title(f'Training Performance for {os.path.basename(plot_name)}')
         plt.xlabel('Epochs')
         plt.ylabel('Loss')
         plt.savefig(plot_name)

@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 
-lr = [0.001, 0.01]
+lr = [0.1, 0.05, 0.01]
 neurons = [1024, 512, 128, 64]
 
 loss = ['mse','ce']
