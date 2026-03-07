@@ -7,6 +7,8 @@ To get started, install the following python dependencies:
 - Seaborn
 - ScikitLearn
 
+probably best to do this in a venv
+
 -----
 
 Then to train a single network with some parameters, run 
