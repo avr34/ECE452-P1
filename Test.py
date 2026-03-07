@@ -122,7 +122,7 @@ class Network():
         try:
             # Step 1: Initialize the first layer's input
             # We flatten the input if it's an image (in our case 16x16 -> 256)
-            self.layers[0].PreActivation = input_vector.flatten()
+            self.layers[0].PreActivation = input_vector.reshape(1,256)
             
             # Step 2: Iterate through layers
             for i in range(len(self.layers) - 1):
@@ -154,9 +154,7 @@ class MnistNetwork(nn.Module):
             nn.Linear(256, n),
             nn.ReLU(),
             nn.Linear(n, 10), 
-            nn.ReLU(),
-            nn.Linear(10,10),
-            nn.ReLU()
+            nn.Softmax(dim=1)
         )
 
 #----------------------------

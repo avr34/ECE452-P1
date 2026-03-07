@@ -31,9 +31,7 @@ class MnistNetwork(nn.Module):
             nn.Flatten(),
             nn.Linear(256, n),
             nn.ReLU(),
-            nn.Linear(n, 64), 
-            nn.ReLU(),
-            nn.Linear(64,10),
+            nn.Linear(n, 10), 
             nn.Softmax(dim=1)
         )
 
