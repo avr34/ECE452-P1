@@ -31,10 +31,10 @@ class MnistNetwork(nn.Module):
             nn.Flatten(),
             nn.Linear(256, n),
             nn.ReLU(),
-            nn.Linear(n, 10), 
+            nn.Linear(n, 64), 
             nn.ReLU(),
-            nn.Linear(10,10),
-            nn.ReLU()
+            nn.Linear(64,10),
+            nn.Softmax(dim=1)
         )
 
     # Forward pass through convolutional and fully connected layers
@@ -43,7 +43,7 @@ class MnistNetwork(nn.Module):
 
     # Training function. Uses Mean Squared Error loss with Stochastic
     # Gradient Descent optimizer.
-    def fit(self, images, labels, epochs: int = 5, lr: float = 0.001, batch: int = 64, plot_name=None, loss_type='mse', opt_type='sgd'):
+    def fit(self, images, labels, epochs: int = 5, lr: float = 0.001, batch: int = 50, plot_name=None, loss_type='mse', opt_type='sgd'):
         images = torch.stack(images)
         labels = torch.tensor(labels)
         dataset = TensorDataset(images, labels)
@@ -62,7 +62,7 @@ class MnistNetwork(nn.Module):
         else:
             optimizer = torch.optim.SGD(self.parameters(), lr=lr)
 
-        labels_OneHot = F.one_hot(labels, num_classes=10).float()
+        # labels_OneHot = F.one_hot(labels, num_classes=10).float()
 
         # just puts the model in training mode, doesn't train it
         self.train()
@@ -72,6 +72,8 @@ class MnistNetwork(nn.Module):
             total_loss = 0
             for images, labels in train_loader:
                 images, labels = images.to(device), labels.to(device)
+
+                labels_OneHot = F.one_hot(labels, num_classes=10).float()
 
                 optimizer.zero_grad()
                 outputs = self.forward(images)
