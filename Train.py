@@ -29,9 +29,9 @@ class MnistNetwork(nn.Module):
         super(MnistNetwork, self).__init__()
         self.Layers = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(256, 128),
+            nn.Linear(256, n),
             nn.ReLU(),
-            nn.Linear(128, 10), 
+            nn.Linear(n, 10), 
             nn.ReLU(),
             nn.Linear(10,10),
             nn.ReLU()
@@ -140,7 +140,7 @@ if __name__=='__main__':
 
     labels, images = ConvImageToTensor(args.dir)
 
-    model = MnistNetwork()
+    model = MnistNetwork(args.neurons)
     model.fit(images, labels,
               epochs=args.epochs,
               lr=args.lr,

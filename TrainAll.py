@@ -5,8 +5,6 @@ import subprocess
 lr = [0.001, 0.01]
 neurons = [1024, 512, 128, 64]
 
-lr_filename = ['001', '01']
-
 loss = ['mse','ce']
 opt  = ['sgd','adam']
 
@@ -24,8 +22,8 @@ except Exception as e:
 cd = os.path.join(os.getcwd(), 'outputs')
 
 for i in neurons:
-    for j in range(2):
-        foldername = f'{i}_{lr_filename[j]}'
+    for j in lr:
+        foldername = f"{i}_{str(j).split('.')[1]}"
         try:
             os.makedirs(os.path.join(cd, foldername))
         except (FileExistsError, FileNotFoundError):
@@ -36,7 +34,7 @@ for i in neurons:
         
         for l in loss:
             for o in opt:
-                subprocess.run(['python3', 'Train.py', '--epochs', '2000', '--lr', f'{lr[j]}', '--output', os.path.join(cd, foldername, foldername + f'_{l}_{o}'), '--plot', os.path.join(cd, 'pics', foldername + f'_{l}_{o}')], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run([sys.executable, 'Train.py', '--epochs', '2000', '--lr', f'{j}', '--output', os.path.join(cd, foldername, foldername + f'_{l}_{o}'), '--plot', os.path.join(cd, 'pics', foldername + f'_{l}_{o}'), '--neurons', f'{i}'] , stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 print(f'Completed {count} out of {total}')
                 count += 1
 
