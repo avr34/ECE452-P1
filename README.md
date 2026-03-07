@@ -35,4 +35,10 @@ python3 Test.py <path to .pt file>
 
 -----
 
-I will add a TestAll.py soon.
+To test all the generated networks, run
+
+```
+python3 TestAll.py
+```
+
+This will run all the tests, and generate coefficient matrices.
