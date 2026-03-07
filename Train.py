@@ -150,4 +150,4 @@ if __name__=='__main__':
               opt_type=args.opt)
 
     finalname = args.output if args.output.endswith('.pt') else args.output + '.pt'
-    torch.save(model.state_dict(), finalname)
+    torch.save(model, finalname)
