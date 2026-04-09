@@ -49,14 +49,15 @@ colors = {'Numpy': '#3498db', 'Native': '#e67e22'}
 plt.figure(figsize=(10, 6))
 
 for i, size_results in enumerate(all_times):
-    x_center = test_sizes[i]
 
     for cat_idx, cat_name in enumerate(categories):
+        x_center = test_sizes[i]
+        
         values = size_results[cat_idx]
 
-        offset = -2 if cat_idx == 0 else 2
+        # offset = -2 if cat_idx == 0 else 2
         
-        x_pos = x_center + offset
+        x_pos = x_center # + offset
 
         bp = plt.boxplot(values, positions=[x_pos], widths=20, patch_artist=True, showfliers=False)
 
@@ -66,7 +67,7 @@ for i, size_results in enumerate(all_times):
         jitter = np.random.uniform(-0.8, 0.8, size=len(values))
         plt.scatter(x_pos + jitter, values, color=colors[cat_name], s=25, alpha=0.7, label=cat_name if i==0 else "")
 
-plt.xticks(test_sizes)
+# plt.xticks(range(len(test_sizes)), test_sizes)
 plt.yscale('log')
 plt.xlabel('Matrix Size')
 plt.ylabel('Time (seconds - log scale)')
